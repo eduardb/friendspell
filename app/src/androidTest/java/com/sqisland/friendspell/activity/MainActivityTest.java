@@ -59,7 +59,7 @@ public class MainActivityTest extends BaseTest {
         .check(matches(not(isDisplayed())));
     TestUtil.matchToolbarTitle(activity.getString(R.string.title_word_sets));
 
-    Mockito.verify(googleApiClientBridge, Mockito.times(2)).isSignedIn();
+    Mockito.verify(googleApiClientBridge, Mockito.times(3)).isSignedIn();
   }
 
   private ActivityResult createSignInResult() {

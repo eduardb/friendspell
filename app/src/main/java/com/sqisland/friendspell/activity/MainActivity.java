@@ -68,8 +68,6 @@ public class MainActivity extends AppCompatActivity implements
   @Bind(R.id.word_sets)
   ListView wordSetsListView;
 
-  private Menu menu;
-
   @Inject
   DatabaseApi databaseApi;
 
@@ -234,11 +232,17 @@ public class MainActivity extends AppCompatActivity implements
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
     getMenuInflater().inflate(R.menu.activity_main, menu);
-
-    this.menu = menu;
-    updateMenuItems();
-
     return true;
+  }
+
+  @Override
+  public boolean onPrepareOptionsMenu(Menu menu) {
+    boolean visible = (googleApiClientBridge.isSignedIn() &&
+            wordSetsListView.getVisibility() == View.VISIBLE);
+    for (int i = 0; i < menu.size(); ++i) {
+      menu.getItem(i).setVisible(visible);
+    }
+    return super.onPrepareOptionsMenu(menu);
   }
 
   @Override
@@ -276,7 +280,7 @@ public class MainActivity extends AppCompatActivity implements
     signInButton.setEnabled(true);
     signedOutPane.setVisibility(View.VISIBLE);
 
-    updateMenuItems();
+    supportInvalidateOptionsMenu();
   }
 
   private void showAutoSignedInUI() {
@@ -284,18 +288,6 @@ public class MainActivity extends AppCompatActivity implements
 
     signedOutPane.setVisibility(View.GONE);
     wordSetsListView.setVisibility(View.VISIBLE);
-    updateMenuItems();
-  }
-
-  private void updateMenuItems() {
-    if (menu == null) {
-      return;
-    }
-
-    boolean visible = (googleApiClientBridge.isSignedIn() &&
-        wordSetsListView.getVisibility() == View.VISIBLE);
-    for (int i = 0; i < menu.size(); ++i) {
-      menu.getItem(i).setVisible(visible);
-    }
+    supportInvalidateOptionsMenu();
   }
 }
